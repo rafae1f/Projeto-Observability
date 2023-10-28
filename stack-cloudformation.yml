@@ -13,10 +13,6 @@ Parameters:
         Type: AWS::EC2::Subnet::Id
         Description: Subnet ID
 
-    KeyName:
-        Type: AWS::EC2::KeyPair::KeyName
-        Description: Key Pair Name
-
     InstanceType:
         Type: String
         Description: EC2 instance type
@@ -48,8 +44,6 @@ Metadata:
         default: "Subnet ID"
       InstanceType:
         default: "EC2 instance type"
-      KeyName:
-        default: "Key Pair Name"
 
 ################################### MAPPINGS ###################################
 
@@ -62,6 +56,11 @@ Mappings:
 ################################### RESOURCES ###################################
 
 Resources:
+
+  NewKeyPair:
+    Type: 'AWS::EC2::KeyPair'
+    Properties:
+      KeyName: EC2KeyPair
 
   EC2Role:
     Type: 'AWS::IAM::Role'
@@ -95,7 +94,7 @@ Resources:
         - !Ref EC2SecurityGroupSSH
       ImageId: !FindInMap [AWSRegionToAMI, !Ref 'AWS::Region', AMI]
       InstanceType: !Ref InstanceType
-      KeyName: !Ref KeyName
+      KeyName: !Ref NewKeyPair
       SubnetId: !Ref Subnet
       Tags:
         - Key: Name
