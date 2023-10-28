@@ -5,14 +5,6 @@ Description: Provisionamento da infraestrutura para o projeto de Observabilidade
 
 Parameters:
 
-    VPC:
-        Type: AWS::EC2::VPC::Id
-        Description: VPC ID
-
-    Subnet:
-        Type: AWS::EC2::Subnet::Id
-        Description: Subnet ID
-
     InstanceType:
         Type: String
         Description: EC2 instance type
@@ -28,20 +20,10 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
-          default: "REDE"
-        Parameters:
-          - VPC
-          - Subnet
-      - Label:
           default: "EC2"
         Parameters:
           - InstanceType
-          - KeyName
     ParameterLabels:
-      VPC:
-        default: "VPC ID"
-      Subnet:
-        default: "Subnet ID"
       InstanceType:
         default: "EC2 instance type"
 
@@ -51,7 +33,7 @@ Mappings:
 
   AWSRegionToAMI:
     us-east-1:
-      AMI: ami-03eb6185d756497f8
+      AMI: ami-01eccbf80522b562b
 
 ################################### RESOURCES ###################################
 
@@ -62,7 +44,7 @@ Resources:
     Properties:
       KeyName: EC2KeyPair
 
-  EC2Role:
+  EC2Connect:
     Type: 'AWS::IAM::Role'
     Properties:
       AssumeRolePolicyDocument:
@@ -88,12 +70,11 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      Roles:
-        - !Ref EC2Role
-      SecurityGroupIds:
-        - !Ref EC2SecurityGroupSSH
       ImageId: !FindInMap [AWSRegionToAMI, !Ref 'AWS::Region', AMI]
       InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref EC2SecurityGroupSSH
+      IamInstanceProfile: !Ref EC2Connect
       KeyName: !Ref NewKeyPair
       SubnetId: !Ref Subnet
       Tags:
@@ -111,3 +92,12 @@ Resources:
           sudo chmod +x /usr/local/bin/docker-compose
           cd
           git clone https://github.com/rafae1f/Projeto-Observability.git
+
+################################### STACK OUTPUTS ###################################
+
+Outputs:
+  InstanceIp:
+    Description: IP da instancia
+    Value: !GetAtt MyContainer.PublicIp
+    Export:
+      Name: InstanceIp
