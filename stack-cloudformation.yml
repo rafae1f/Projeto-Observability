@@ -40,14 +40,15 @@ Mappings:
 Resources:
 
   NewKeyPair:
-    Type: 'AWS::EC2::KeyPair'
+    Type: AWS::EC2::KeyPair
     Properties:
       KeyName: EC2KeyPair
 
-  EC2Connect:
-    Type: 'AWS::IAM::Role'
+  EC2RoleSSM:
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
@@ -55,12 +56,14 @@ Resources:
                 - ec2.amazonaws.com
             Action:
               - 'sts:AssumeRole'
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM
 
   EC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Security Group for EC2 instance
-      VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -94,13 +97,12 @@ Resources:
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
-      ImageId: !FindInMap [AWSRegionToAMI, !Ref 'AWS::Region', AMI]
+      ImageId: !FindInMap [AWSRegionToAMI, !Ref AWS::Region, AMI]
       InstanceType: !Ref InstanceType
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
-      IamInstanceProfile: !Ref EC2Connect
+      IamInstanceProfile: !Ref EC2RoleSSM
       KeyName: !Ref NewKeyPair
-      SubnetId: !Ref Subnet
       Tags:
         - Key: Name
           Value: !Ref AWS::StackName
@@ -122,6 +124,6 @@ Resources:
 Outputs:
   InstanceIp:
     Description: IP da instancia
-    Value: !GetAtt MyContainer.PublicIp
+    Value: !GetAtt EC2Instance.PublicIp
     Export:
       Name: InstanceIp
