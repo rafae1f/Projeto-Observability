@@ -4,7 +4,7 @@ services:
   prometheus:
     image: prom/prometheus:v2.46.0
     ports:
-      - 9090:9090
+      - "9090:9090"
     networks:
       - backend
     volumes:
@@ -26,12 +26,12 @@ services:
     deploy:
       mode: global
     ports:
-      - 8080:8080
+      - "8080:8080"
 
   grafana:
     image: grafana/grafana:10.0.0
     ports:
-      - 3000:3000
+      - "3000:3000"
     networks:
       - backend
       - frontend
@@ -39,29 +39,53 @@ services:
       - grafana-data:/var/lib/grafana
       - ./grafana/provisioning:/etc/grafana/provisioning
 
-
   alertmanager:
     image: prom/alertmanager:v0.25.0
     networks:
       - backend
     ports:
-      - 9093:9093
+      - "9093:9093"
     volumes:
       - ./alertmanager:/etc/alertmanager
       - alertmanager-data:/data
     command: --config.file=/etc/alertmanager/alertmanager.yml
 
-  apiprojeto:
-    image: apiprojeto:0.1
+  mariadb:
+    image: mariadb:10.3.8
+    volumes:
+      - mariadb-data:/var/lib/mysql
     ports:
-        - 80:80
+      - "3306:3306"
     networks:
         - backend
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_USER: mariadb
+      MYSQL_PASSWORD: admin
+      MYSQL_DB: wordpress
+
+  wordpress:
+    depends_on:
+      - mariadb
+    image: wordpress:latest
+    volumes:
+      - wordpress-data:/var/www/html
+    ports:
+        - "8181:80"
+    networks:
+        - backend
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_USER: mariadb
+      WORDPRESS_DB_PASSWORD: admin
+      WORDPRESS_DB_NAME: wordpress
 
 volumes:
   prometheus-data:
   grafana-data:
   alertmanager-data:
+  mariadb-data:
+  wordpress-data:
 
 networks:
   frontend:

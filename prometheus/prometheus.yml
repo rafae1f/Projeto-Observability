@@ -17,7 +17,7 @@ scrape_configs:
   - job_name: 'node'
     scrape_interval: 5s
     static_configs:
-            - targets: ['localhost:9090','cadvisor:8080','node-exporter:9100']
+          - targets: ['localhost:9090','cadvisor:8080','node-exporter:9100']
 
   - job_name: 'netdata'
     metrics_path: '/api/v1/allmetrics'
@@ -28,7 +28,12 @@ scrape_configs:
     static_configs:
          - targets: ['YOUR_NETDATA_IP:19999']
 
-  - job_name: "Projeto Exporter" # Nome do job que vai coletar as métricas.
+  - job_name: 'mariadb'
     scrape_interval: 5s
     static_configs:
-      - targets: [ 'apiprojeto:80' ] # Endereço do alvo monitorado.
+          - targets: ['mariadb:3306']
+
+  - job_name: "wordpress"
+    scrape_interval: 5s
+    static_configs:
+          - targets: [ 'wordpress:8181' ]
