@@ -25,7 +25,7 @@ Metadata:
           - InstanceType
     ParameterLabels:
       InstanceType:
-        default: "EC2 instance type"
+        default: "Qual o tipo de instancia EC2 que deseja criar?"
 
 ################################### MAPPINGS ###################################
 
@@ -94,6 +94,13 @@ Resources:
           ToPort: 9000
           CidrIp: 0.0.0.0/0
 
+  EC2InstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: /
+      Roles:
+        - !Ref EC2RoleSSM
+
   EC2Instance:
     Type: AWS::EC2::Instance
     Properties:
@@ -101,11 +108,8 @@ Resources:
       InstanceType: !Ref InstanceType
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
-      IamInstanceProfile: !Ref EC2RoleSSM
+      IamInstanceProfile: !Ref EC2InstanceProfile
       KeyName: !Ref NewKeyPair
-      Tags:
-        - Key: Name
-          Value: !Ref AWS::StackName
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
