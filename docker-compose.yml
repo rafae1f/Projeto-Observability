@@ -51,7 +51,8 @@ services:
     command: --config.file=/etc/alertmanager/alertmanager.yml
 
   mysqldb:
-    image: mysql:latest
+    image: mysql:5.7
+    restart: always
     volumes:
       - mysqldb-data:/var/lib/mysql
     ports:
@@ -59,10 +60,10 @@ services:
     networks:
         - backend
     environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_USER: mysqldb
-      MYSQL_PASSWORD: admin
-      MYSQL_DB: wordpress
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+      MYSQL_DB: my_database
 
   wordpress:
     depends_on:
@@ -76,9 +77,9 @@ services:
         - backend
     environment:
       WORDPRESS_DB_HOST: mysqldb:3306
-      WORDPRESS_DB_USER: mysqldb
-      WORDPRESS_DB_PASSWORD: admin
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_USER: my_user
+      WORDPRESS_DB_PASSWORD: my_password
+      WORDPRESS_DB_NAME: my_database
 
 volumes:
   prometheus-data:
