@@ -5,18 +5,30 @@ import json
 # time para fazer o sleep
 import time
 # Importa o módulo prometheus_client para criar as métricas
-from prometheus_client import start_http_server, Gauge, Counter, REGISTRY
+from prometheus_client import (
+    CollectorRegistry,
+    Counter,
+    Histogram,
+    generate_latest,
+    multiprocess,
+)
 
+registry = CollectorRegistry()
+multiprocess.MultiProcessCollector(registry)
 
-# Classe para criar as métricas
-class CustomCollector(object):
-    def collect(self):
-        yield g
-        yield c
+PROM_GRAPHQL_REQUEST_TIME = Histogram(
+    'request_processing_seconds',
+    'Time spent processing an API request',
+)
 
+PROM_PAGEVIEWS = Counter(
+    'pageviews',
+    'Number of pageviews',
+)
 
-# Registra o coletor
-REGISTRY.register(CustomCollector())
+def registry_to_text():
+    return generate_latest(registry)
+
 
 # Função principal
 if __name__ == '__main__':
