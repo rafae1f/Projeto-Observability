@@ -28,10 +28,10 @@ scrape_configs:
     static_configs:
          - targets: ['YOUR_NETDATA_IP:19999']
 
-  - job_name: 'mariadb'
+  - job_name: 'mysqldb'
     scrape_interval: 5s
     static_configs:
-          - targets: ['mariadb:3306']
+          - targets: ['mysqldb:3306']
 
   - job_name: "wordpress"
     scrape_interval: 5s

@@ -50,33 +50,33 @@ services:
       - alertmanager-data:/data
     command: --config.file=/etc/alertmanager/alertmanager.yml
 
-  mariadb:
-    image: mariadb:10.3.8
+  mysqldb:
+    image: mysql:latest
     volumes:
-      - mariadb-data:/var/lib/mysql
+      - mysqldb-data:/var/lib/mysql
     ports:
       - "3306:3306"
     networks:
         - backend
     environment:
       MYSQL_ROOT_PASSWORD: admin
-      MYSQL_USER: mariadb
+      MYSQL_USER: mysqldb
       MYSQL_PASSWORD: admin
       MYSQL_DB: wordpress
 
   wordpress:
     depends_on:
-      - mariadb
+      - mysqldb
     image: wordpress:latest
     volumes:
       - wordpress-data:/var/www/html
     ports:
-        - "8181:80"
+        - "8181:8181"
     networks:
         - backend
     environment:
-      WORDPRESS_DB_HOST: mariadb:3306
-      WORDPRESS_DB_USER: mariadb
+      WORDPRESS_DB_HOST: mysqldb:3306
+      WORDPRESS_DB_USER: mysqldb
       WORDPRESS_DB_PASSWORD: admin
       WORDPRESS_DB_NAME: wordpress
 
@@ -84,7 +84,7 @@ volumes:
   prometheus-data:
   grafana-data:
   alertmanager-data:
-  mariadb-data:
+  mysqldb-data:
   wordpress-data:
 
 networks:
