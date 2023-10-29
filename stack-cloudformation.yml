@@ -124,26 +124,33 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          sudo yum update -y
-          sudo amazon-linux-extras install docker -y
-          sudo service docker start
-          sudo systemctl enable docker
-          sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-          sudo chmod +x /usr/local/bin/docker-compose
-          sudo yum install git -y
+          yum update -y
+          amazon-linux-extras install docker -y
+          service docker start
+          systemctl enable docker
+          curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
+          chmod +x /usr/local/bin/docker-compose
+          yum install git -y
+          
+          adduser -m ssm-user
+          tee /etc/sudoers.d/ssm-agent-users <<'EOF'
+          ssm-user ALL=(ALL) NOPASSWD:ALL
+          EOF
+          chmod 440 /etc/sudoers.d/ssm-agent-users 
+          
+          usermod -a -G docker ssm-user  
           cd /home/ssm-user
-          sudo git clone https://github.com/rafae1f/Projeto-Observability.git
-          sudo rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md
-          sudo mv Projeto-Observability/* ./home/ssm-user/
-          sudo rm -rf Projeto-Observability
-          sudo usermod -aG docker ssm-user
-          sudo reboot
+          git clone https://github.com/rafae1f/Projeto-Observability.git
+          rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md
+          mv Projeto-Observability/* .
+          rm -rf Projeto-Observability
+          reboot
 
 ################################### STACK OUTPUTS ###################################
 
 Outputs:
   InstanceIp:
-    Description: IP da instancia
+    Description: IP publico da instancia EC2
     Value: !GetAtt EC2Instance.PublicIp
     Export:
       Name: InstanceIp
