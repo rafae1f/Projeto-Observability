@@ -5,13 +5,18 @@ Description: Provisionamento da infraestrutura para o projeto de Observabilidade
 
 Parameters:
 
-    InstanceType:
-        Type: String
-        Description: EC2 instance type
-        Default: t2.micro
-        AllowedValues:
-          - t2.micro
-          - t2.medium
+  IpAddress:
+    Type: String
+    Description: IP para acesso ex 123.123.123.123 https://ipcost.com/pt
+    Default: 0.0.0.0
+
+  InstanceType:
+      Type: String
+      Description: EC2 instance type
+      Default: t2.micro
+      AllowedValues:
+        - t2.micro
+        - t2.medium
 
 ################################### METADATA ###################################
 
@@ -20,10 +25,16 @@ Metadata:
   AWS::CloudFormation::Interface:
     ParameterGroups:
       - Label:
+          default: "NETWORK"
+        Parameters:
+          - IpAddress
+      - Label:
           default: "EC2"
         Parameters:
           - InstanceType
     ParameterLabels:
+      IpAddress:
+        default: "Qual o seu IP?"
       InstanceType:
         default: "Qual o tipo de instancia EC2 que deseja criar?"
 
@@ -68,31 +79,31 @@ Resources:
         - IpProtocol: tcp
           FromPort: 22
           ToPort: 22
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Sub '${IpAddress}/32'
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Sub '${IpAddress}/32'
         - IpProtocol: tcp
           FromPort: 9090
           ToPort: 9090
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Sub '${IpAddress}/32'
         - IpProtocol: tcp
           FromPort: 3000
           ToPort: 3000
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Sub '${IpAddress}/32'
         - IpProtocol: tcp
           FromPort: 9093
           ToPort: 9093
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Sub '${IpAddress}/32'
         - IpProtocol: tcp
           FromPort: 8080
           ToPort: 8080
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Sub '${IpAddress}/32'
         - IpProtocol: tcp
           FromPort: 9000
           ToPort: 9000
-          CidrIp: 0.0.0.0/0
+          CidrIp: !Sub '${IpAddress}/32'
 
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -119,11 +130,13 @@ Resources:
           sudo systemctl enable docker
           sudo curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-          cd
           sudo yum install git -y
-          git clone https://github.com/rafae1f/Projeto-Observability.git
+          cd /home/ssm-user
+          sudo git clone https://github.com/rafae1f/Projeto-Observability.git
           sudo rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md
-          sudo usermod -a -G docker ssm-user
+          sudo mv Projeto-Observability/* ./home/ssm-user/
+          sudo rm -rf Projeto-Observability
+          sudo usermod -aG docker ssm-user
           sudo reboot
 
 ################################### STACK OUTPUTS ###################################
