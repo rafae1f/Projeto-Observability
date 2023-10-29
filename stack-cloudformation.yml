@@ -104,6 +104,14 @@ Resources:
           FromPort: 9000
           ToPort: 9000
           CidrIp: !Sub '${IpAddress}/32'
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: !Sub '${IpAddress}/32'
+        - IpProtocol: tcp
+          FromPort: 8181
+          ToPort: 8181
+          CidrIp: !Sub '${IpAddress}/32'
 
   EC2InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -144,7 +152,7 @@ Resources:
           rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md
           mv Projeto-Observability/* .
           rm -rf Projeto-Observability
-          reboot
+          docker-compose up -d
 
 ################################### STACK OUTPUTS ###################################
 
