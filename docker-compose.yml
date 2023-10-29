@@ -71,7 +71,7 @@ services:
     volumes:
       - wordpress-data:/var/www/html
     ports:
-        - "8181:8181"
+        - "80:80"
     networks:
         - backend
     environment:

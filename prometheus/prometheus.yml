@@ -36,4 +36,4 @@ scrape_configs:
   - job_name: "wordpress"
     scrape_interval: 5s
     static_configs:
-          - targets: [ 'wordpress:8181' ]
+          - targets: [ 'wordpress:80' ]
