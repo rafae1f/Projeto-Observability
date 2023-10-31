@@ -94,6 +94,10 @@ Resources:
     Properties:
       ImageId: !FindInMap [AWSRegionToAMI, !Ref AWS::Region, AMI]
       InstanceType: !Ref InstanceType
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs:
+            VolumeSize: 12
       SecurityGroupIds:
         - !Ref EC2SecurityGroup
       IamInstanceProfile: !Ref EC2InstanceProfile
@@ -102,6 +106,9 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           yum update -y
+          yum install -y telnet
+          yum install -y nc
+          yum install -y rsyslog
           yum install -y git
           amazon-linux-extras install -y docker
           service docker start
@@ -119,7 +126,9 @@ Resources:
           rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md
           mv Projeto-Observability/* .
           rm -rf Projeto-Observability
-          docker-compose up -d
+          sysctl -w vm.max_map_count=262144
+          echo "INSTANCE_IP=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)" > .env
+          docker-compose -p projeto  --env-file .env up -d
 
 ################################### STACK OUTPUTS ###################################
 
