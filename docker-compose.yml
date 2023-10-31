@@ -69,7 +69,7 @@ services:
       - backend
       - frontend
     ports:
-        - "8080:80"
+        - "80:8080"
     environment:
       - DB_HOST=postgres
       - DB_DATABASE=kubenews
