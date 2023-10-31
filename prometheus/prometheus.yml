@@ -28,12 +28,12 @@ scrape_configs:
     static_configs:
          - targets: ['YOUR_NETDATA_IP:19999']
 
-  - job_name: 'bd_postgres'
+  - job_name: 'bd_projeto'
     scrape_interval: 5s
     static_configs:
           - targets: ['postgres:5432']
 
-  - job_name: 'api_kubenews'
+  - job_name: 'api_projeto'
     metrics_path: '/metrics'
     scrape_interval: 5s
     static_configs:
