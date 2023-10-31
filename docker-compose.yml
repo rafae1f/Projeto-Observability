@@ -97,7 +97,7 @@ services:
       - POSTGRES_PASSWORD=Pg#123
 
   web:
-    image: fabricioveronez/kube-news:v1
+    image: rafae1f/apicrud:v1
     depends_on:
       - graylog
     networks:
