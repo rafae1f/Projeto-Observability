@@ -58,6 +58,8 @@ services:
       - ALLOW_EMPTY_PASSWORD=yes
       - MARIADB_USER=bn_wordpress
       - MARIADB_DATABASE=bitnami_wordpress
+    networks:
+        - backend
 
   wordpress:
     image: docker.io/bitnami/wordpress:6
@@ -69,12 +71,43 @@ services:
     depends_on:
       - mariadb
     environment:
-      # ALLOW_EMPTY_PASSWORD is recommended only for development.
       - ALLOW_EMPTY_PASSWORD=yes
       - WORDPRESS_DATABASE_HOST=mariadb
       - WORDPRESS_DATABASE_PORT_NUMBER=3306
       - WORDPRESS_DATABASE_USER=bn_wordpress
       - WORDPRESS_DATABASE_NAME=bitnami_wordpress
+    networks:
+      - backend
+      - frontend
+
+  wordpress_exporter:
+    depends_on:
+      - mariadb
+    image: erwin82/wordpress_exporter:latest
+    ports:
+      - "8888:8888"
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - WORDPRESS_DB_HOST=db
+      - WORDPRESS_DB_USER=wordpress
+      - WORDPRESS_DB_NAME=bitnami_wordpress
+    networks:
+        - backend
+
+  jaeger:
+    container_name: jeager_tracing
+    image: jaegertracing/all-in-one
+    networks:
+      - backend
+    ports:
+      - "5775:5775/udp"
+      - "6831:6831/udp"
+      - "6832:6832/udp"
+      - "5778:5778"
+      - "16686:16686"
+      - "14268:14268"
+      - "9411:9411"
 
 volumes:
   mariadb_data:

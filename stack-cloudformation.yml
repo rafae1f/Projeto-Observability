@@ -53,7 +53,7 @@ Resources:
   NewKeyPair:
     Type: AWS::EC2::KeyPair
     Properties:
-      KeyName: EC2KeyPair
+      KeyName: !Sub '${AWS::StackName}-EC2KeyPair'
 
   EC2RoleSSM:
     Type: AWS::IAM::Role
@@ -77,36 +77,8 @@ Resources:
       GroupDescription: Security Group for EC2 instance
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
-          CidrIp: !Sub '${IpAddress}/32'
-        - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: !Sub '${IpAddress}/32'
-        - IpProtocol: tcp
-          FromPort: 9090
-          ToPort: 9090
-          CidrIp: !Sub '${IpAddress}/32'
-        - IpProtocol: tcp
-          FromPort: 3000
-          ToPort: 3000
-          CidrIp: !Sub '${IpAddress}/32'
-        - IpProtocol: tcp
-          FromPort: 9093
-          ToPort: 9093
-          CidrIp: !Sub '${IpAddress}/32'
-        - IpProtocol: tcp
-          FromPort: 8080
-          ToPort: 8080
-          CidrIp: !Sub '${IpAddress}/32'
-        - IpProtocol: tcp
-          FromPort: 9000
-          ToPort: 9000
-          CidrIp: !Sub '${IpAddress}/32'
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
+          FromPort: 0
+          ToPort: 65535
           CidrIp: !Sub '${IpAddress}/32'
 
   EC2InstanceProfile:
@@ -129,26 +101,24 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           yum update -y
-          amazon-linux-extras install docker -y
+          yum install -y git
+          amazon-linux-extras install -y docker
           service docker start
           systemctl enable docker
           curl -L https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
           chmod +x /usr/local/bin/docker-compose
-          yum install git -y
-          
           adduser -m ssm-user
           tee /etc/sudoers.d/ssm-agent-users <<'EOF'
           ssm-user ALL=(ALL) NOPASSWD:ALL
           EOF
-          chmod 440 /etc/sudoers.d/ssm-agent-users 
-          
-          usermod -a -G docker ssm-user  
+          chmod 440 /etc/sudoers.d/ssm-agent-users
+          usermod -aG docker ssm-user
           cd /home/ssm-user
           git clone https://github.com/rafae1f/Projeto-Observability.git
           rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md
           mv Projeto-Observability/* .
           rm -rf Projeto-Observability
-          docker-compose up -d
+          docker-compose -p projeto up -d
 
 ################################### STACK OUTPUTS ###################################
 
