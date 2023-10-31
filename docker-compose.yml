@@ -50,57 +50,34 @@ services:
       - alertmanager-data:/data
     command: --config.file=/etc/alertmanager/alertmanager.yml
 
-  mariadb:
-    image: docker.io/bitnami/mariadb:11.1
-    volumes:
-      - 'mariadb_data:/bitnami/mariadb'
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - MARIADB_USER=bn_wordpress
-      - MARIADB_DATABASE=bitnami_wordpress
+  postgres:
+    image: postgres:15.0
     networks:
-        - backend
-
-  wordpress:
-    image: docker.io/bitnami/wordpress:6
+      - backend
     ports:
-      - '80:8080'
-      - '443:8443'
-      - '3306:3306'
+      - "5432:5432"
     volumes:
-      - 'wordpress_data:/bitnami/wordpress'
-    depends_on:
-      - mariadb
+      - postgres-data:/var/lib/postgresql/data
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - WORDPRESS_DATABASE_HOST=mariadb
-      - WORDPRESS_DATABASE_PORT_NUMBER=3306
-      - WORDPRESS_DATABASE_USER=bn_wordpress
-      - WORDPRESS_DATABASE_NAME=bitnami_wordpress
+      - POSTGRES_DB=kubenews
+      - POSTGRES_USER=kubenews
+      - POSTGRES_PASSWORD=Pg#123
+
+  web:
+    image: fabricioveronez/kube-news:v1
     networks:
       - backend
       - frontend
-
-  wordpress_exporter:
-    depends_on:
-      - mariadb
-    image: erwin82/wordpress_exporter:latest
     ports:
-      - "8888:8888"
-    restart: always
+        - "8080:80"
     environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-      - WORDPRESS_DB_HOST=db
-      - WORDPRESS_DB_USER=wordpress
-      - WORDPRESS_DB_NAME=bitnami_wordpress
-    networks:
-        - backend
+      - DB_HOST=postgres
+      - DB_DATABASE=kubenews
+      - DB_USERNAME=kubenews
+      - DB_PASSWORD=Pg#123
 
 volumes:
-  mariadb_data:
-    driver: local
-  wordpress_data:
-    driver: local
+  postgres-data:
   prometheus-data:
   grafana-data:
   alertmanager-data:
