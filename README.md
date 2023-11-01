@@ -2,6 +2,7 @@
 
 ## Descrição do Projeto
 Projeto desenvolvido para a disciplina de Observability do curso de DevOps da Ada Tech + Núclea.
+
 Professor: [Israel Nogueira](https://www.linkedin.com/in/israel-lnogueira/)
 
 Alunos: [Rafael Ferreira](https://www.linkedin.com/in/rafae1f/), [Vanessa Schnee](https://www.linkedin.com/in/vanessa-schnee/), [Ana Beatriz](https://www.linkedin.com/in/ana-beatriz-ferraz-078420156/), [Laysa Belici](https://www.linkedin.com/in/laysabelici/)
