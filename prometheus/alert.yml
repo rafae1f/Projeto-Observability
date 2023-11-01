@@ -2,7 +2,7 @@ groups:
   - name: ProjetoAlerts
     rules:
       - alert: InstanceDown
-        expr: up{job="services"} < 1
+        expr: up{job="apicrudv1"} < 1
         for: 5m
         annotations:
           title: 'Instance {{ $labels.instance }} down'
