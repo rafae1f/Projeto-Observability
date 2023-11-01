@@ -8,7 +8,8 @@ Professor: [Israel Nogueira](https://www.linkedin.com/in/israel-lnogueira/)
 Alunos: [Rafael Ferreira](https://www.linkedin.com/in/rafae1f/), [Vanessa Schnee](https://www.linkedin.com/in/vanessa-schnee/), [Ana Beatriz](https://www.linkedin.com/in/ana-beatriz-ferraz-078420156/), [Laysa Belici](https://www.linkedin.com/in/laysabelici/)
 
 ## Objetivo
-O objetivo do projeto é instrumentar uma aplicação de exemplo com as ferramentas de observabilidade: Prometheus, Grafana e Graylog.
+O objetivo do projeto é instrumentar uma aplicação de exemplo com as ferramentas de observabilidade:\
+Prometheus, AlertManager, Grafana e Graylog.
 
 ## Tecnologias
 - AWS
@@ -53,20 +54,27 @@ cat .env
 ```
 copie o ip INSTANCE_IP
 
-Em seu navegador web acesse o graylog atraves do ip publico da instância EC2 copiado no passo anterior\
-utilize a porta 9000\
+Em seu navegador web acesse o graylog atraves do ip publico da instância EC2 copiado no passo anterior utilizando a porta 9000\
 ${INSTANCE_IP}:9000
 
-System -> Inputs -> Select Input\
-Selecione a opção: GELF TCP\
-Launch new input
+Login: admin | Senha: admin
 
-Marque a opção Global\
-Escolha um título\
-confira se a Port está definida como: 12201\
+System -> Inputs -> Select Input\
+Selecione a opção: **GELF TCP** -> Launch new input
+
+Marque a opção **Global**, escolha um título\
+confira se a Port está definida como: **12201**\
 Save
 
 Retorne para EC2
 ```bash
 docker-compose -p projeto  --env-file .env up -d
 ```
+
+Acesse o Grafana através do ip publico da instância EC2 utilizando a porta 3000\
+${INSTANCE_IP}:3000
+
+Login: admin | Senha: admin
+
+Importe o dashboard do Prometheus: Create -> Import -> Upload JSON file\
+Selecione o arquivo: Dashboard.json -> Selecione o data source: Prometheus -> Import
