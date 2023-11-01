@@ -1,23 +1,12 @@
 var express = require('express');
 var router = express.Router();
 const os = require('os')
-const NodeHog = require('nodehog');
 
 let isHealth = true;
 let readTime = new Date(Date.now());
 let isRead = () => { 
     return readTime < new Date(Date.now());
 };
-
-router.put('/stress/tempo/:tempoStress/intervalo/:intervalo/ciclos/:ciclos', (req, res) => {
-
-    const elemento = 'cpu';
-    const tempoStress = req.params.tempoStress * 1000;
-    const tempoFolga = req.params.tempoFolga * 1000;
-    const ciclos = req.params.ciclos;
-    new NodeHog(elemento, tempoStress, tempoFolga, ciclos).start();
-    res.send("OK");
-});
 
 router.get('/ready', (req, res) => {
    
