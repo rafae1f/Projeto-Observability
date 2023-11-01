@@ -114,7 +114,7 @@ services:
       driver: gelf
       options:
           gelf-address: tcp://${GRAYLOG_IP}:12201
-          tag: api_projeto
+          tag: apicrudv1
 
 volumes:
   postgres-data:
