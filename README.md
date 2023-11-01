@@ -15,6 +15,7 @@ O objetivo do projeto é instrumentar uma aplicação de exemplo com as ferramen
 - Docker
 - Docker Compose
 - Prometheus
+- Alertmanager
 - Grafana
 - Graylog
 
