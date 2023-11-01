@@ -78,3 +78,5 @@ Login: admin | Senha: admin
 
 Importe o dashboard do Prometheus: Create -> Import -> Upload JSON file\
 Selecione o arquivo: Dashboard.json -> Selecione o data source: Prometheus -> Import
+
+![Dashboard V1](Dashboardv1.png)
