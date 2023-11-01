@@ -104,7 +104,7 @@ services:
       - backend
       - frontend
     ports:
-        - "80:8888"
+        - "80:8080"
     environment:
       - DB_HOST=postgres
       - DB_DATABASE=apicrud

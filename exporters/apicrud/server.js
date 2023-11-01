@@ -79,6 +79,6 @@ app.get('/', async (req, res) => {
 });
 
 models.initDatabase();
-app.listen(8888);
+app.listen(8080);
 
-console.log('Aplicação rodando na porta 8888');
+console.log('Aplicação rodando na porta 8080');
