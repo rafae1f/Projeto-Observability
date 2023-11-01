@@ -28,7 +28,7 @@ scrape_configs:
     static_configs:
          - targets: ['YOUR_NETDATA_IP:19999']
 
-  - job_name: 'api_projeto'
+  - job_name: 'apicrudv1'
     metrics_path: '/metrics'
     scrape_interval: 5s
     static_configs:

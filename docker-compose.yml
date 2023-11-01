@@ -92,12 +92,12 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=catalogo
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=kubenews
+      - POSTGRES_USER=kubenews
+      - POSTGRES_PASSWORD=Pg#123
 
   web:
-    image: rafae1f/apicrud:v1
+    image: fabricioveronez/kube-news:v1
     depends_on:
       - graylog
     networks:
@@ -107,9 +107,9 @@ services:
         - "80:8080"
     environment:
       - DB_HOST=postgres
-      - DB_DATABASE=catalogo
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=admin
+      - DB_DATABASE=kubenews
+      - DB_USERNAME=kubenews
+      - DB_PASSWORD=Pg#123
     logging:
       driver: gelf
       options:
