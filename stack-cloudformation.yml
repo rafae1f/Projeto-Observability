@@ -125,7 +125,7 @@ Resources:
           usermod -aG docker ssm-user
           cd /home/ssm-user
           git clone https://github.com/rafae1f/Projeto-Observability.git
-          rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md Projeto-Observability/exporters
+          rm Projeto-Observability/stack-cloudformation.yml Projeto-Observability/README.md Projeto-Observability/exporters Dashboardv1.png Dashboardv.json
           mv Projeto-Observability/* .
           rm -rf Projeto-Observability
           sysctl -w vm.max_map_count=262144
