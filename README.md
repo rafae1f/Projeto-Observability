@@ -66,10 +66,8 @@ Marque a opção **Global**, escolha um título\
 confira se a Port está definida como: **12201**\
 Save
 
-Retorne para EC2
-```bash
-docker-compose -p projeto  --env-file .env up -d
-```
+***Não é necessário**, mas caso o container da aplicação não esteja ativo retorne para EC2 e execute o comando:*\
+*docker-compose -p projeto  --env-file .env up -d*
 
 Acesse o Grafana através do ip publico da instância EC2 utilizando a porta 3000\
 ${INSTANCE_IP}:3000
